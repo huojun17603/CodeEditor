@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.coder.core.mapper.TableMapper" >
+
+    <select id="selectSchemas" resultType="com.coder.core.entity.Schema">
+        SELECT SCHEMA_NAME AS NAME FROM information_schema.SCHEMATA
+    </select>
+
+    <select id="selectTables" resultType="com.coder.core.entity.Table" parameterType="String">
+        SELECT TABLE_NAME AS NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = #{schema}
+    </select>
+
+    <select id="selectTable" resultType="com.coder.core.entity.Table">
+        SELECT
+            TABLE_NAME AS tableName,
+            TABLE_COMMENT AS comment
+        FROM information_schema.TABLES
+        WHERE TABLE_SCHEMA = #{schema} AND TABLE_NAME = #{table}
+    </select>
+    <select id="selectColumns" resultType="com.coder.core.entity.Columns">
+        SELECT
+            COLUMN_NAME AS columnName,
+            IS_NULLABLE AS nullable,
+            DATA_TYPE AS columnType,
+            CHARACTER_MAXIMUM_LENGTH AS length,
+            NUMERIC_PRECISION AS pre,
+            NUMERIC_SCALE AS scale,
+            COLUMN_KEY AS ckey,
+            EXTRA AS extra,
+            COLUMN_COMMENT AS comment
+        FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = #{schema} AND TABLE_NAME = #{table}
+    </select>
+    <select id="selectPriColumns" resultType="com.coder.core.entity.Columns">
+        SELECT
+        COLUMN_NAME AS columnName,
+        IS_NULLABLE AS nullable,
+        DATA_TYPE AS columnType,
+        CHARACTER_MAXIMUM_LENGTH AS length,
+        NUMERIC_PRECISION AS pre,
+        NUMERIC_SCALE AS scale,
+        COLUMN_KEY AS ckey,
+        EXTRA AS extra,
+        COLUMN_COMMENT AS comment
+        FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = #{schema} AND TABLE_NAME = #{table} AND COLUMN_KEY = 'PRI'
+    </select>
+</mapper>
