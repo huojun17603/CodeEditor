@@ -1,0 +1,95 @@
+package #{package}
+
+import java.util.List;
+import java.util.Map;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+
+import com.ich.core.base.ObjectHelper;
+import com.ich.core.http.entity.HttpResponse;
+import com.ich.core.http.entity.PageView;
+import com.ich.core.http.entity.SortView;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+#{import}
+
+
+@Service
+public class #{EntityName}ServiceImpl implements #{EntityName}Service {
+
+    @Autowired
+    private #{EntityName}Mapper #{EntityLName}Mapper;
+	
+	@Override
+	public HttpResponse add#{EntityName}(#{EntityName} #{EntityLName}){
+		//TODO 数据验证
+		//TODO 初始化
+		//保存
+		#{EntityLName}Mapper.insertSelective(#{EntityLName});
+		return new HttpResponse(HttpResponse.HTTP_OK,HttpResponse.HTTP_MSG_OK);
+	}
+	
+	@Override
+	public HttpResponse edit#{EntityName}(#{EntityName} #{EntityLName}){
+		#{EntityName} entity = #{EntityLName}Mapper.selectByPrimaryKey(#{GetIDs});
+		if(ObjectHelper.isEmpty(entity)){
+            return new HttpResponse(HttpResponse.HTTP_ERROR,"无效的数据信息");
+        }
+		//TODO 数据验证
+		#{EntityLName}Mapper.updateByPrimaryKeySelective(#{EntityLName});
+		return new HttpResponse(HttpResponse.HTTP_OK,HttpResponse.HTTP_MSG_OK);
+	}
+	
+	@Override
+	public HttpResponse edit#{EntityName}Status(#{IDParams},Integer status){
+		//TODO 这个先自己写吧
+		return new HttpResponse(HttpResponse.HTTP_OK,HttpResponse.HTTP_MSG_OK);
+	}
+	
+	@Override
+	public HttpResponse delete#{EntityName}(#{IDParams}){
+		//TODO 
+		#{EntityLName}Mapper.deleteByPrimaryKey(#{IDs});
+		return new HttpResponse(HttpResponse.HTTP_OK,HttpResponse.HTTP_MSG_OK);
+	}
+	
+	@Override
+	public #{EntityName} findById(#{IDParams}){
+		return #{EntityLName}Mapper.selectByPrimaryKey(#{IDs});
+	}
+	
+	@Override
+	public List<#{EntityName}> findList(PageView page,SortView sort, #{EntityName}Example example){
+		PageHelper.startPage(page.getPage(),page.getRows());
+		if(ObjectHelper.isNotEmpty(sort)){
+			if(ObjectHelper.isNotEmpty(sort.getSort())&&ObjectHelper.isNotEmpty(sort.getOrder())){
+				example.setOrderByClause(sort.getSort()+" "+sort.getOrder());
+			}
+		}
+		List<#{EntityName}> list = #{EntityLName}Mapper.selectByExample(example);
+		PageInfo<#{EntityName}> pageInfo = new PageInfo<#{EntityName}>(list);
+		page.setRowCount(pageInfo.getTotal());
+		return list;
+	}
+	
+	@Override
+	public List<Map<String,Object>> findAdminList(PageView page,SortView sort,AdminQuery query){
+		PageHelper.startPage(page.getPage(),page.getRows());
+		Map<String,Object> paramMap = new HashMap<String,Object>();
+		if(ObjectHelper.isNotEmpty(sort)){
+			if(ObjectHelper.isNotEmpty(sort.getSort())&&ObjectHelper.isNotEmpty(sort.getOrder())){
+				paramMap.put("orderByClause",sort.getSort()+" "+sort.getOrder());
+			}
+		}
+		//TODO 添加条件
+		//if(ObjectHelper.isNotEmpty(query.getSearchkey()))paramMap.put("searchkey", query.getSearchkey());
+		//TODO 
+		List<Map<String,Object>> list = #{EntityLName}Mapper.selectAdminList(paramMap);
+		PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(list);
+		page.setRowCount(pageInfo.getTotal());
+		return list;
+	}
+}

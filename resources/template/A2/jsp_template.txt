@@ -5,19 +5,19 @@
 <html>
   <head>
     <base href="<%=basePath%>">
-    <title>测试页</title>
+    <title>#{view_title}</title>
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<meta http-equiv="expires" content="0">
 	<jsp:include page="../common/shareJs.jsp" />
 
-	<script type="text/javascript" src="<%=basePath%>view/admin/iTextIndex.js"></script>
+	<script type="text/javascript" src="<%=basePath%>view/#{view}"></script>
 	<script type="text/javascript">
-		var addIText = "admin/iText/add";
-		var editIText = "admin/iText/edit";
-		var editstatusIText = "admin/iText/editstatus";
-		var deleteIText = "admin/iText/delete";
-		var ITextlist = "admin/iText/list";
+		var add#{EntityName} = "#{ViewHeaderMapping}/#{MethodMapping}/add";
+		var edit#{EntityName} = "#{ViewHeaderMapping}/#{MethodMapping}/edit";
+		var editstatus#{EntityName} = "#{ViewHeaderMapping}/#{MethodMapping}/editstatus";
+		var delete#{EntityName} = "#{ViewHeaderMapping}/#{MethodMapping}/delete";
+		var #{EntityName}list = "#{ViewHeaderMapping}/#{MethodMapping}/list";
 	</script>
 
   </head>
@@ -26,7 +26,7 @@
     <table id="datagrid"></table>
     <div id="tool" style="padding:0px;height:auto;overflow: hidden;">
    		<div style="padding: 8px 35px 8px 14px;text-shadow: 0 1px 0 rgba(255,255,255,0.5);background-color: #fcf8e3;border: 1px solid #fbeed5;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;color: #666;">
-			<div style="line-height:30px">备注</div>
+			<div style="line-height:30px">#{view_remark}</div>
 			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="openAddWin()">新增</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="openEditWin()">修改</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="editStatus()">修改状态</a>
@@ -44,47 +44,7 @@
        	<form id="apply_form">
        		<input id="id_apply_input" name="id" type="hidden">
        		<ul class="fm_s" style="overflow: inherit;">
-								<li class="fm_2l">
-					<label>ID：</label>
-					<input name="id" class="easyui-validatebox textbox vipt" data-options="required:true">
-				</li>
-				<li class="fm_2l">
-					<label>编码：</label>
-					<input name="code" class="easyui-validatebox textbox vipt" data-options="required:true">
-				</li>
-				<li class="fm_2l">
-					<label>名称：</label>
-					<input name="name" class="easyui-validatebox textbox vipt" data-options="required:true">
-				</li>
-				<li class="fm_2l">
-					<label>年龄：</label>
-					<input name="age" class="easyui-validatebox textbox vipt" data-options="required:true">
-				</li>
-				<li class="fm_2l">
-					<label>时间：</label>
-					<input name="time" class="easyui-validatebox textbox vipt" data-options="required:true">
-				</li>
-				<li class="fm_2l">
-					<label>余额：</label>
-					<input name="balance" class="easyui-validatebox textbox vipt" data-options="required:true">
-				</li>
-				<li class="fm_2l">
-					<label>现金：</label>
-					<input name="money" class="easyui-validatebox textbox vipt" data-options="required:true">
-				</li>
-				<li class="fm_2l">
-					<label>时间戳：</label>
-					<input name="stamp" class="easyui-validatebox textbox vipt" data-options="required:true">
-				</li>
-				<li class="fm_2l">
-					<label>性别：</label>
-					<input name="six" class="easyui-validatebox textbox vipt" data-options="required:true">
-				</li>
-				<li class="fm_2l">
-					<label>生日：</label>
-					<input name="birthbay" class="easyui-validatebox textbox vipt" data-options="required:true">
-				</li>
-
+				#{apply_form_li}
 				<li class="fm_1l" style="text-align: center;padding-top: 20px">
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok"  style="width:100px"  onclick="apply()">确认</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"  style="width:100px"  onclick="closeWin()">取消</a>

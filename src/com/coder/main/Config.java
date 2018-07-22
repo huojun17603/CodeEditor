@@ -11,7 +11,7 @@ public class Config {
 
     public static String author = "";
     /************输出路径************/
-    public static String out = "";
+    public static String out = ".\\src";
     /************配置参数************/
     public static Map<String,String> configMap = new HashMap<>();
     /************模板注册************/
@@ -19,7 +19,7 @@ public class Config {
     public static List<Template> templates = new ArrayList<>();//可使用模板列表
     static {
         templates.add(new Template("通用持久层生成模板","pojo2MService","Mybatis,MySQL"));
-        templates.add(new Template("ssss","IAdminService","Mybatis,MySQL"));
+        templates.add(new Template("ICH通用代码生成模板","IAdminService","Mybatis,MySQL"));
     }
 
 

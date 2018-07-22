@@ -1,6 +1,6 @@
 ﻿$(function(){
 	$("#datagrid").datagrid({
-		url:basePath + ITextlist,
+		url:basePath + #{EntityName}list,
 		border:false,
 		striped:true,
 	    fit:true,
@@ -12,16 +12,7 @@
 	    pagination:true,//显示底部分页工具栏
 	    singleSelect:true,//单选
 	    columns:[[
-		      {field:'id',title:'ID',align:"center",width:200},
-		      {field:'code',title:'编码',align:"center",width:200},
-		      {field:'name',title:'名称',align:"center",width:200},
-		      {field:'age',title:'年龄',align:"center",width:200},
-		      {field:'time',title:'时间',align:"center",width:200},
-		      {field:'balance',title:'余额',align:"center",width:200},
-		      {field:'money',title:'现金',align:"center",width:200},
-		      {field:'stamp',title:'时间戳',align:"center",width:200},
-		      {field:'six',title:'性别',align:"center",width:200},
-		      {field:'birthbay',title:'生日',align:"center",width:200}
+#{view_columns}
 		]],
 		toolbar:'#tool',
 		onLoadSuccess:function(){
@@ -34,7 +25,7 @@ var applyUrl = "";
 
 function openAddWin(){
 	$('#apply_form').form("clear");
-	applyUrl = addIText;
+	applyUrl = add#{EntityName};
 	$('#apply_window').window('open');
 	$('#apply_window').window('center');	
 }
@@ -47,18 +38,9 @@ function openEditWin(){
 	}
 	$('#apply_form').form("clear");
 	$("#apply_form").form("load",{
-		id:row.id,
-		code:row.code,
-		name:row.name,
-		age:row.age,
-		time:row.time,
-		balance:row.balance,
-		money:row.money,
-		stamp:row.stamp,
-		six:row.six,
-		birthbay:row.birthbay
+#{view_load_form_data}
 	});
-	applyUrl = editIText;
+	applyUrl = edit#{EntityName};
 	$('#apply_window').window('open');
 	$('#apply_window').window('center');	
 }
@@ -96,7 +78,7 @@ function editStatus(){
 	$.messager.confirm('禁用提示', '你确定要'+prompt+'吗？', function(r){
 		if(r){
 			$.ajax({
-				url:basePath+editstatusIText,
+				url:basePath+editstatus#{EntityName},
 				data:{"id":row.id,"status":status},
 				success: function (data) {
 	            	if(data.status==0){
@@ -122,7 +104,7 @@ function deletePojo(){
 	$.messager.confirm('禁用提示', '你确定要删除吗？', function(r){
 		if(r){
 			$.ajax({
-				url:basePath+deleteIText,
+				url:basePath+delete#{EntityName},
 				data:{"id":row.id},
 				success: function (data) {
 	            	if(data.status==0){
