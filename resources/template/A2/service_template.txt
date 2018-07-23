@@ -26,6 +26,7 @@ public class #{EntityName}ServiceImpl implements #{EntityName}Service {
 	@Override
 	public HttpResponse add#{EntityName}(#{EntityName} #{EntityLName}){
 		//TODO 数据验证
+#{EntityVerify}
 		//TODO 初始化
 		//保存
 		#{EntityLName}Mapper.insertSelective(#{EntityLName});
@@ -70,7 +71,7 @@ public class #{EntityName}ServiceImpl implements #{EntityName}Service {
 			}
 		}
 		List<#{EntityName}> list = #{EntityLName}Mapper.selectByExample(example);
-		PageInfo<#{EntityName}> pageInfo = new PageInfo<#{EntityName}>(list);
+		PageInfo<#{EntityName}> pageInfo = new PageInfo<>(list);
 		page.setRowCount(pageInfo.getTotal());
 		return list;
 	}
@@ -78,7 +79,7 @@ public class #{EntityName}ServiceImpl implements #{EntityName}Service {
 	@Override
 	public List<Map<String,Object>> findAdminList(PageView page,SortView sort,AdminQuery query){
 		PageHelper.startPage(page.getPage(),page.getRows());
-		Map<String,Object> paramMap = new HashMap<String,Object>();
+		Map<String,Object> paramMap = new HashMap<>();
 		if(ObjectHelper.isNotEmpty(sort)){
 			if(ObjectHelper.isNotEmpty(sort.getSort())&&ObjectHelper.isNotEmpty(sort.getOrder())){
 				paramMap.put("orderByClause",sort.getSort()+" "+sort.getOrder());
@@ -88,7 +89,7 @@ public class #{EntityName}ServiceImpl implements #{EntityName}Service {
 		//if(ObjectHelper.isNotEmpty(query.getSearchkey()))paramMap.put("searchkey", query.getSearchkey());
 		//TODO 
 		List<Map<String,Object>> list = #{EntityLName}Mapper.selectAdminList(paramMap);
-		PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(list);
+		PageInfo<Map<String,Object>> pageInfo = new PageInfo<>(list);
 		page.setRowCount(pageInfo.getTotal());
 		return list;
 	}

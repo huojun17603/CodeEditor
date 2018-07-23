@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ include file="../common/taglib.jsp"%>
+<%@ include file="../../admin/common/taglib.jsp"%>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -9,7 +9,7 @@
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<meta http-equiv="expires" content="0">
-	<jsp:include page="../common/shareJs.jsp" />
+	<jsp:include page="../../admin/common/shareJs.jsp" />
 
 	<script type="text/javascript" src="<%=basePath%>view/#{view}"></script>
 	<script type="text/javascript">
@@ -27,10 +27,10 @@
     <div id="tool" style="padding:0px;height:auto;overflow: hidden;">
    		<div style="padding: 8px 35px 8px 14px;text-shadow: 0 1px 0 rgba(255,255,255,0.5);background-color: #fcf8e3;border: 1px solid #fbeed5;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;color: #666;">
 			<div style="line-height:30px">#{view_remark}</div>
-			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="openAddWin()">新增</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="openEditWin()">修改</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="openAddWindow()">新增</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="openEditWindow()">修改</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="editStatus()">修改状态</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="deletePojo()">删除</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="deleteEntity()">删除</a>
 			<div class="sgtz_atn">
 				<span style="font-weight: bold;">搜索筛选：</span>
 				<input id="sk_searchkey" class="easyui-searchbox" data-options="prompt:'搜索关键字（TODO）',searcher:doSearch" style="width:300px"></input>
@@ -47,7 +47,7 @@
 				#{apply_form_li}
 				<li class="fm_1l" style="text-align: center;padding-top: 20px">
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok"  style="width:100px"  onclick="apply()">确认</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"  style="width:100px"  onclick="closeWin()">取消</a>
+					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"  style="width:100px"  onclick="closeWindow()">取消</a>
 				</li>
 			</ul>
        	</form>

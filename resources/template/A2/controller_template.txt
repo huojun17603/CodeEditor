@@ -67,7 +67,7 @@ public class #{EntityName}Controller extends AdminController{
 	@Link(name = "#{EntityCNName}-分页列表",code = "#{menu}-list", 
 		level = Link.LEVEL_READ,parent = "#{menu}")
 	public String list(PageView page,SortView sort,AdminQuery query,String callback){
-		List<Map<String,Object>> list = this.#{EntityLName}Service.findAdminList(page,sort,query);
+		List<?> list = this.#{EntityLName}Service.findAdminList(page,sort,query);
 		Map<String,Object> model = getSuccessMap();
 		model.put(HttpEasyUIResponse.HTTP_DATA_PAGE_TOTAL, page.getRowCount());
 		model.put(HttpEasyUIResponse.HTTP_DATA_PAGE_ROWS, list);		

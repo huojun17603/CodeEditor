@@ -1,0 +1,17 @@
+版本说明
+--------
+仅读版本：A2
+	Service:标准功能；
+	Controller+JSP+JS中只有查看功能（列表，导出，详情）
+--------
+审核版本：A3
+	Service:标准功能+审核功能（审核方法）；
+	Controller+JSP+JS：审核功能（列表，审核）
+--------
+标准版本：A1
+	Service:标准功能
+	Controller+JSP+JS：标准功能（列表，新增，修改，删除）
+--------
+扩展版本：A4
+	Service:标准功能
+	Controller+JSP+JS：扩展功能（列表，新增，修改，删除，导出，详情）

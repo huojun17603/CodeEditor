@@ -1,0 +1,32 @@
+package #{package}
+
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+
+import com.ich.core.http.entity.HttpResponse;
+import com.ich.core.http.entity.PageView;
+import com.ich.core.http.entity.SortView;
+
+#{import}
+
+public interface #{EntityName}Service {
+	
+	public HttpResponse add#{EntityName}(#{EntityName} #{EntityLName});
+	
+	public HttpResponse edit#{EntityName}(#{EntityName} #{EntityLName});
+	
+	public HttpResponse edit#{EntityName}Status(#{IDParams},Integer status);
+
+	public HttpResponse audit#{EntityName}(#{IDParams}, Integer handleresult, String handlermark);
+
+	public HttpResponse delete#{EntityName}(#{IDParams});
+	
+	public #{EntityName} findById(#{IDParams});
+	
+	public List<#{EntityName}> findList(PageView page,SortView sort, #{EntityName}Example example);
+	
+	public List<Map<String,Object>> findAdminList(PageView page,SortView sort,AdminQuery query);
+	
+	
+}

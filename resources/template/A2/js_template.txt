@@ -23,14 +23,14 @@
 
 var applyUrl = "";
 
-function openAddWin(){
+function openAddWindow(){
 	$('#apply_form').form("clear");
 	applyUrl = add#{EntityName};
 	$('#apply_window').window('open');
 	$('#apply_window').window('center');	
 }
 
-function openEditWin(){
+function openEditWindow(){
 	var row = $("#datagrid").datagrid("getSelected");
 	if(isEmpty(row)){
 		$.messager.alert("提示框","请选择一条记录！");
@@ -45,7 +45,7 @@ function openEditWin(){
 	$('#apply_window').window('center');	
 }
 
-function closeWin(){
+function closeWindow(){
 	$("#apply_window").window('close');
 }
 
@@ -95,7 +95,7 @@ function editStatus(){
 	});
 }
 
-function deletePojo(){
+function deleteEntity(){
 	var row = $('#datagrid').datagrid('getSelected');
 	if(isEmpty(row)){
 		$.messager.alert("提示框","请选择一条数据记录！");
