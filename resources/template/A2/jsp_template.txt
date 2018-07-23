@@ -13,10 +13,8 @@
 
 	<script type="text/javascript" src="<%=basePath%>view/#{view}"></script>
 	<script type="text/javascript">
-		var add#{EntityName} = "#{ViewHeaderMapping}/#{MethodMapping}/add";
-		var edit#{EntityName} = "#{ViewHeaderMapping}/#{MethodMapping}/edit";
-		var editstatus#{EntityName} = "#{ViewHeaderMapping}/#{MethodMapping}/editstatus";
-		var delete#{EntityName} = "#{ViewHeaderMapping}/#{MethodMapping}/delete";
+		var detail#{EntityName} = "#{ViewHeaderMapping}/#{MethodMapping}/detail";
+        var export#{EntityName} = "#{ViewHeaderMapping}/#{MethodMapping}/export";
 		var #{EntityName}list = "#{ViewHeaderMapping}/#{MethodMapping}/list";
 	</script>
 
@@ -27,32 +25,39 @@
     <div id="tool" style="padding:0px;height:auto;overflow: hidden;">
    		<div style="padding: 8px 35px 8px 14px;text-shadow: 0 1px 0 rgba(255,255,255,0.5);background-color: #fcf8e3;border: 1px solid #fbeed5;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;color: #666;">
 			<div style="line-height:30px">#{view_remark}</div>
-			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="openAddWindow()">新增</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="openEditWindow()">修改</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="editStatus()">修改状态</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="deleteEntity()">删除</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="openDWindow()">详情</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="doExport()">导出</a>
 			<div class="sgtz_atn">
 				<span style="font-weight: bold;">搜索筛选：</span>
-				<input id="sk_searchkey" class="easyui-searchbox" data-options="prompt:'搜索关键字（TODO）',searcher:doSearch" style="width:300px"></input>
-			</div> 
+				<input id="sk_btime" class="easyui-datebox" data-options="prompt:'开始时间'">
+                <input id="sk_etime" class="easyui-datebox" data-options="prompt:'结束时间'">
+                <input id="sk_searchkey" class="easyui-validatebox textbox vipt" data-options="prompt:'搜索关键字（TODO）'" style="width:300px"></input>
+                <a href="javascript:void(0)" class="easyui-linkbutton"  style="width:80px"  onclick="doSearch()" >搜索</a>
+                <a href="javascript:void(0)" class="easyui-linkbutton"  style="width:80px"  onclick="doClear()" >清空</a>
+			</div>
 		</div>
 	</div>
 
-    <div id="apply_window" class="easyui-window" title="信息表单" 
-		data-options="modal:true,collapsible:false,minimizable:false,maximizable:false,resizable:false,closable:false,closed:true" 
-		style="width:800px;height:600px;padding:10px;">
-       	<form id="apply_form">
-       		<input id="id_apply_input" name="id" type="hidden">
-       		<ul class="fm_s" style="overflow: inherit;">
-				#{apply_form_li}
-				<li class="fm_1l" style="text-align: center;padding-top: 20px">
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok"  style="width:100px"  onclick="apply()">确认</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"  style="width:100px"  onclick="closeWindow()">取消</a>
-				</li>
-			</ul>
-       	</form>
+    <div id="detail_window" class="easyui-window" title="详情"
+		data-options="modal:true,collapsible:false,minimizable:false,maximizable:false,resizable:false,closable:false,closed:true"
+		style="width:1000px;height:630px;">
+        <div id="deatil_tab" class="easyui-tabs" style="width:100%;height:100%"  data-options="border:false">
+            <div title="基本信息" style="padding:10px;">
+                <ul class="fm_s">
+                    <li>
+                        <label>ID：</label>
+                        <input id="id_d_input" class="easyui-validatebox textbox vipt" disabled="disabled">
+                    </li>
+                </ul>
+            </div>
+            <div title="其他列表" >
+                <table id="_datagrid" style="height:565px;"></table>
+                <div id="_tool" style="padding:0px;height:auto;overflow: hidden;">
+                    <div class="sgtz_atn"></div>
+                </div>
+            </div>
+        </div>
     </div>
-    
 
   </body>
 </html>

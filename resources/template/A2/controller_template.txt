@@ -25,43 +25,16 @@ public class #{EntityName}Controller extends AdminController{
 
     @Autowired
     private #{EntityName}Service #{EntityLName}Service;
-	
-	@RequestMapping(value="#{MethodMapping}/add",produces= MediaType.APPLICATION_JSON_VALUE+";charset=utf-8")
+
+	@RequestMapping(value="#{MethodMapping}/detail",produces= MediaType.APPLICATION_JSON_VALUE+";charset=utf-8")
 	@ResponseBody
-	@Link(name = "#{EntityCNName}-新增",code = "#{menu}-add", 
-		level = Link.LEVEL_WRITE,parent = "#{menu}")
-	public String add(#{EntityName} #{EntityLName},String callback){
-		HttpResponse result = this.#{EntityLName}Service.add#{EntityName}(#{EntityLName});
-		return callback(callback,result);
+	@Link(name = "#{EntityCNName}-详情",code = "#{menu}-detail",
+		level = Link.LEVEL_READ,parent = "#{menu}")
+	public String detail(#{IDParams},String callback){
+		#{EntityName} entity = this.#{EntityLName}Service.findById(#{IDs});
+		return callback(callback,new HttpResponse(HttpResponse.HTTP_OK,HttpResponse.HTTP_MSG_OK,entity));
 	}
-	
-	@RequestMapping(value="#{MethodMapping}/edit",produces= MediaType.APPLICATION_JSON_VALUE+";charset=utf-8")
-	@ResponseBody
-	@Link(name = "#{EntityCNName}-修改",code = "#{menu}-edit", 
-		level = Link.LEVEL_EDIT,parent = "#{menu}")
-	public String edit(#{EntityName} #{EntityLName},String callback){
-		HttpResponse result = this.#{EntityLName}Service.edit#{EntityName}(#{EntityLName});
-		return callback(callback,result);
-	}
-	
-	@RequestMapping(value="#{MethodMapping}/editstatus",produces= MediaType.APPLICATION_JSON_VALUE+";charset=utf-8")
-	@ResponseBody
-	@Link(name = "#{EntityCNName}-修改状态",code = "#{menu}-editstatus", 
-		level = Link.LEVEL_EDIT,parent = "#{menu}")
-	public String editstatus(#{IDParams},Integer status,String callback){
-		HttpResponse result = this.#{EntityLName}Service.edit#{EntityName}Status(#{IDs},status);
-		return callback(callback,result);
-	}
-	
-	@RequestMapping(value="#{MethodMapping}/delete",produces= MediaType.APPLICATION_JSON_VALUE+";charset=utf-8")
-	@ResponseBody
-	@Link(name = "#{EntityCNName}-删除",code = "#{menu}-delete", 
-		level = Link.LEVEL_DETELE,parent = "#{menu}")
-	public String delete(#{IDParams},String callback){
-		HttpResponse result = this.#{EntityLName}Service.delete#{EntityName}(#{IDs});
-		return callback(callback,result);
-	}
-	
+
 	@RequestMapping(value="#{MethodMapping}/list",produces= MediaType.APPLICATION_JSON_VALUE+";charset=utf-8")
 	@ResponseBody
 	@Link(name = "#{EntityCNName}-分页列表",code = "#{menu}-list", 
@@ -73,5 +46,32 @@ public class #{EntityName}Controller extends AdminController{
 		model.put(HttpEasyUIResponse.HTTP_DATA_PAGE_ROWS, list);		
 		return callback(callback,JsonUtils.objectToJson(model));
 	}
+
+	@RequestMapping(value="#{MethodMapping}/export",produces= MediaType.APPLICATION_JSON_VALUE+";charset=utf-8")
+    @ResponseBody
+    @Link(name = "#{EntityCNName}-导出",code = "#{menu}-export",
+    	level = Link.LEVEL_READ,parent = "#{menu}")
+    public void export(HttpServletResponse response,PageView page, SortView sort,AdminQuery query,String callback){
+        this.#{EntityLName}Service.findAdminList(page,sort,query);
+        PageView exview = new PageView();
+        if(page.getRowCount()>1000000){
+            try {
+                response.getWriter().print(callback(callback, JsonUtils.objectToJson(getFailMap("导出记录量不得大于1000000条"))));
+                response.getWriter().flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return ;
+        }
+    	if(page.getRowCount()>0)exview.setRows((int)page.getRowCount());
+    	List<Map<String,Object>> list =  this.#{EntityLName}Service.findAdminList(exview,sort,query);
+        Map<String,String> headMap = new LinkedHashMap<String,String>();
+        String btime = ObjectHelper.isEmpty(query.getBtime())?"上线":query.getBtime();
+        String etime = ObjectHelper.isEmpty(query.getEtime())?"至今":query.getEtime();
+        String title = "#{EntityCNName}（"+btime+"~"+etime+"）";
+        //TODO 表头
+        //headMap.put("userphone", "会员手机");
+        ExcelUtil.downloadExcelFile(title,headMap,list,response);
+    }
 	
 }

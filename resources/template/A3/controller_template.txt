@@ -26,39 +26,12 @@ public class #{EntityName}Controller extends AdminController{
     @Autowired
     private #{EntityName}Service #{EntityLName}Service;
 	
-	@RequestMapping(value="#{MethodMapping}/add",produces= MediaType.APPLICATION_JSON_VALUE+";charset=utf-8")
+	@RequestMapping(value="#{MethodMapping}/audit",produces= MediaType.APPLICATION_JSON_VALUE+";charset=utf-8")
 	@ResponseBody
-	@Link(name = "#{EntityCNName}-新增",code = "#{menu}-add", 
+	@Link(name = "#{EntityCNName}-审核",code = "#{menu}-audit",
 		level = Link.LEVEL_WRITE,parent = "#{menu}")
-	public String add(#{EntityName} #{EntityLName},String callback){
-		HttpResponse result = this.#{EntityLName}Service.add#{EntityName}(#{EntityLName});
-		return callback(callback,result);
-	}
-	
-	@RequestMapping(value="#{MethodMapping}/edit",produces= MediaType.APPLICATION_JSON_VALUE+";charset=utf-8")
-	@ResponseBody
-	@Link(name = "#{EntityCNName}-修改",code = "#{menu}-edit", 
-		level = Link.LEVEL_EDIT,parent = "#{menu}")
-	public String edit(#{EntityName} #{EntityLName},String callback){
-		HttpResponse result = this.#{EntityLName}Service.edit#{EntityName}(#{EntityLName});
-		return callback(callback,result);
-	}
-	
-	@RequestMapping(value="#{MethodMapping}/editstatus",produces= MediaType.APPLICATION_JSON_VALUE+";charset=utf-8")
-	@ResponseBody
-	@Link(name = "#{EntityCNName}-修改状态",code = "#{menu}-editstatus", 
-		level = Link.LEVEL_EDIT,parent = "#{menu}")
-	public String editstatus(#{IDParams},Integer status,String callback){
-		HttpResponse result = this.#{EntityLName}Service.edit#{EntityName}Status(#{IDs},status);
-		return callback(callback,result);
-	}
-	
-	@RequestMapping(value="#{MethodMapping}/delete",produces= MediaType.APPLICATION_JSON_VALUE+";charset=utf-8")
-	@ResponseBody
-	@Link(name = "#{EntityCNName}-删除",code = "#{menu}-delete", 
-		level = Link.LEVEL_DETELE,parent = "#{menu}")
-	public String delete(#{IDParams},String callback){
-		HttpResponse result = this.#{EntityLName}Service.delete#{EntityName}(#{IDs});
+	public String add(#{IDParams}, Integer handleresult, String handlermark,String callback){
+		HttpResponse result = this.#{EntityLName}Service.audit#{EntityName}(#{IDs},handleresult,handlermark);
 		return callback(callback,result);
 	}
 	

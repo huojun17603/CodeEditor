@@ -44,10 +44,15 @@ public class #{EntityName}ServiceImpl implements #{EntityName}Service {
 		return new HttpResponse(HttpResponse.HTTP_OK,HttpResponse.HTTP_MSG_OK);
 	}
 	
-	@Override
+    @Override
 	public HttpResponse edit#{EntityName}Status(#{IDParams},Integer status){
-		//TODO 这个先自己写吧
-		return new HttpResponse(HttpResponse.HTTP_OK,HttpResponse.HTTP_MSG_OK);
+	    #{EntityName} entity = #{EntityLName}Mapper.selectByPrimaryKey(#{IDs});
+        if(ObjectHelper.isEmpty(entity)){
+            return new HttpResponse(HttpResponse.HTTP_ERROR,"无效的数据信息");
+        }
+        //TODO
+        #{EntityLName}Mapper.updateByPrimaryKeySelective(entity);
+        return new HttpResponse(HttpResponse.HTTP_OK,HttpResponse.HTTP_MSG_OK);
 	}
 	
 	@Override
@@ -87,7 +92,9 @@ public class #{EntityName}ServiceImpl implements #{EntityName}Service {
 		}
 		//TODO 添加条件
 		//if(ObjectHelper.isNotEmpty(query.getSearchkey()))paramMap.put("searchkey", query.getSearchkey());
-		//TODO 
+	    //if(ObjectHelper.isNotEmpty(query.getBtime()))paramMap.put("btime", query.getBtime());
+        //if(ObjectHelper.isNotEmpty(query.getEtime()))paramMap.put("etime", query.getEtime());
+		//TODO
 		List<Map<String,Object>> list = #{EntityLName}Mapper.selectAdminList(paramMap);
 		PageInfo<Map<String,Object>> pageInfo = new PageInfo<>(list);
 		page.setRowCount(pageInfo.getTotal());

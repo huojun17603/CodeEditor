@@ -21,42 +21,29 @@
 	});
 });
 
-var applyUrl = "";
-
-function openAddWindow(){
-	$('#apply_form').form("clear");
-	applyUrl = add#{EntityName};
-	$('#apply_window').window('open');
-	$('#apply_window').window('center');	
-}
-
-function openEditWindow(){
+function openAuditWindow(){
 	var row = $("#datagrid").datagrid("getSelected");
 	if(isEmpty(row)){
 		$.messager.alert("提示框","请选择一条记录！");
 		return;
 	}
-	$('#apply_form').form("clear");
-	$("#apply_form").form("load",{
-#{view_load_form_data}
-	});
-	applyUrl = edit#{EntityName};
-	$('#apply_window').window('open');
-	$('#apply_window').window('center');	
+	$('#id_audit_input').val(row.id);
+	$('#audit_window').window('open');
+	$('#audit_window').window('center');
 }
 
-function closeWindow(){
-	$("#apply_window").window('close');
+function closeAuditWindow(){
+	$("#audit_window").window('close');
 }
 
-function apply(){
+function audit(){
 	$.ajax({
-        url: basePath+applyUrl,
-        data: $('#apply_form').serialize(),
+        url: basePath + audit#{EntityName},
+        data: $('#audit_form').serialize(),
         success: function(data){
             if(data.status==0){
             	$('#datagrid').datagrid('reload');
-            	$('#apply_window').window('close');
+            	$('#audit_window').window('close');
             	$.messager.alert("提示框","完成操作请求！");
             }else if(data.status==1){
             	$.messager.alert("错误",data.msg,'warning');
@@ -65,60 +52,6 @@ function apply(){
             }
         }
     });
-}
-
-function editStatus(){
-	var row = $('#datagrid').datagrid('getSelected');
-	if(isEmpty(row)){
-		$.messager.alert("提示框","请选择一条数据记录！");
-		return;
-	}
-	var prompt = row.status==1?"注销":"启用";
-	var status = row.status==1?0:1;
-	$.messager.confirm('禁用提示', '你确定要'+prompt+'吗？', function(r){
-		if(r){
-			$.ajax({
-				url:basePath+editstatus#{EntityName},
-				data:{"id":row.id,"status":status},
-				success: function (data) {
-	            	if(data.status==0){
-	            		$('#datagrid').datagrid('reload');
-						$.messager.alert("提示框","完成操作请求！");
-		            }else if(data.status==1){
-		            	$.messager.alert("错误",data.msg,'warning');
-		            }else if(data.status==3){
-		            	$.messager.alert("警告","无权访问",'warning');
-		            }
-	            }
-			});
-		}
-	});
-}
-
-function deleteEntity(){
-	var row = $('#datagrid').datagrid('getSelected');
-	if(isEmpty(row)){
-		$.messager.alert("提示框","请选择一条数据记录！");
-		return;
-	}
-	$.messager.confirm('禁用提示', '你确定要删除吗？', function(r){
-		if(r){
-			$.ajax({
-				url:basePath+delete#{EntityName},
-				data:{"id":row.id},
-				success: function (data) {
-	            	if(data.status==0){
-	            		$('#datagrid').datagrid('reload');
-						$.messager.alert("提示框","完成操作请求！");
-		            }else if(data.status==1){
-		            	$.messager.alert("错误",data.msg,'warning');
-		            }else if(data.status==3){
-		            	$.messager.alert("警告","无权访问",'warning');
-		            }
-	            }
-			});
-		}
-	});
 }
 
 function doSearch(){
