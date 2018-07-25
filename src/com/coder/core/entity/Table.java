@@ -25,6 +25,16 @@ public class Table {
     //所有字段列表
     private List<Columns> columns;
 
+    private String PID;
+
+    public String getPID() {
+        return PID;
+    }
+
+    public void setPID(String PID) {
+        this.PID = PID;
+    }
+
     public String getPackageName() {
         return packageName;
     }

@@ -17,6 +17,8 @@
 		var edit#{EntityName} = "#{ViewHeaderMapping}/#{MethodMapping}/edit";
 		var editstatus#{EntityName} = "#{ViewHeaderMapping}/#{MethodMapping}/editstatus";
 		var delete#{EntityName} = "#{ViewHeaderMapping}/#{MethodMapping}/delete";
+		var detail#{EntityName} = "#{ViewHeaderMapping}/#{MethodMapping}/detail";
+        var export#{EntityName} = "#{ViewHeaderMapping}/#{MethodMapping}/export";
 		var #{EntityName}list = "#{ViewHeaderMapping}/#{MethodMapping}/list";
 	</script>
 
@@ -31,10 +33,16 @@
 			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="openEditWindow()">修改</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="editStatus()">修改状态</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="deleteEntity()">删除</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="openDWindow()">详情</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="doExport()">导出</a>
 			<div class="sgtz_atn">
-				<span style="font-weight: bold;">搜索筛选：</span>
-				<input id="sk_searchkey" class="easyui-searchbox" data-options="prompt:'搜索关键字（TODO）',searcher:doSearch" style="width:300px"></input>
-			</div> 
+                <span style="font-weight: bold;">搜索筛选：</span>
+                <input id="sk_btime" class="easyui-datebox" data-options="prompt:'开始时间'">
+                <input id="sk_etime" class="easyui-datebox" data-options="prompt:'结束时间'">
+                <input id="sk_searchkey" class="easyui-textbox vipt" data-options="prompt:'搜索关键字（TODO）'" style="width:300px"></input>
+                <a href="javascript:void(0)" class="easyui-linkbutton"  style="width:80px"  onclick="doSearch()" >搜索</a>
+                <a href="javascript:void(0)" class="easyui-linkbutton"  style="width:80px"  onclick="doClear()" >清空</a>
+            </div>
 		</div>
 	</div>
 
@@ -53,6 +61,23 @@
        	</form>
     </div>
     
+    <div id="detail_window" class="easyui-window" title="详情"
+		data-options="modal:true,collapsible:false,minimizable:false,maximizable:false,resizable:false,closable:true,closed:true"
+		style="width:1000px;height:630px;">
+        <div id="deatil_tab" class="easyui-tabs" style="width:100%;height:100%"  data-options="border:false">
+            <div title="基本信息" style="padding:10px;">
+                <ul class="fm_s">
+#{detail_li}
+                </ul>
+            </div>
+            <div title="其他列表" >
+                <table id="_datagrid" style="height:565px;"></table>
+                <div id="_tool" style="padding:0px;height:auto;overflow: hidden;">
+                    <div class="sgtz_atn"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
   </body>
 </html>

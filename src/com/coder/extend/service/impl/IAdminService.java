@@ -31,14 +31,17 @@ import java.util.List;
  * #{IDs} = ID参数（无类型）
  * #{HeaderMapping} = 主映射
  * #{MethodMapping} = 方法映射
+ * #{EntityVerify} = 空数据验证代码
  *
  * #{menu} = 父菜单编码
- * #{view_title}
- * #{view_remark}
- * #{view}
- * #{apply_form_li}
- * #{view_columns}
- * #{view_load_form_data}
+ * #{view_title} = 页面标题
+ * #{view_remark} = 页面说明
+ * #{js_path} = js的路径
+ * #{apply_form_li} = form input组件
+ * #{view_columns} = datagred columns属性
+ * #{view_load_form_data} = form加载数据
+ * #{detail_li} = 数据明细组件
+ * #{detail_li_load_data} = 数据明细组件加载数据代码
  * #{ViewHeaderMapping}
  */
 @Service
@@ -56,7 +59,9 @@ public class IAdminService implements TemplateCoreService {
         String tables = Config.configMap.get("tables");
         String template_path = Config.configMap.get("template_path");
         String package_path = Config.configMap.get("package_path");
-        String view_path = Config.configMap.get("view_path");
+        String view_out = Config.configMap.get("view_out");
+        String menus = Config.configMap.get("PID");
+        String js_path = Config.configMap.get("js_path");
         if(ObjectHelper.isEmpty(schema)){
             logger.error("schema is null!");
             return false;
@@ -73,43 +78,70 @@ public class IAdminService implements TemplateCoreService {
             logger.error("package_path is null");
             return false;
         }
-        if(ObjectHelper.isEmpty(view_path)){
-            logger.error("view_path is null");
+        if(ObjectHelper.isEmpty(view_out)){
+            logger.error("view_out is null");
             return false;
         }
-        //模板路径
-        String service_impl_template_path = template_path + File.separator + "service_impl_template.txt";
-        String service_template_path = template_path + File.separator + "service_template.txt";
-        String controller_template_path = template_path + File.separator + "controller_template.txt";
-        String jsp_template_path = template_path + File.separator + "jsp_template.txt";
-        String js_template_path = template_path + File.separator + "js_template.txt";
         List<Table> table_list = new ArrayList<>();
         try {
             String table_array[] = tables.split(",");
-            for (String tableName : table_array) {
+            String menus_array[] = menus.split(",");
+            if(table_array.length!=menus_array.length){
+                logger.error("构建代码失败：表数量与PID数量不一致");
+                return false;
+            }
+            for(int i=0; i<table_array.length;i++){
+                String tableName = table_array[i];
+                String PID = menus_array[i];
                 //获取表信息
                 Table table = this.coreService.findTable(schema, tableName);
                 if (ObjectHelper.isEmpty(table)) {
                     logger.error("构建代码失败：" + tableName + "不存在");
                     continue;
                 }
+                table.setPID(PID);
                 table.setPackageName(package_path);
                 table_list.add(table);
             }
         }catch (Exception e){
 
         }
-        String view = "admin";
-        String ViewHeaderMapping = "admin";
-        String HeaderMapping = "@RequestMapping(\"admin\")";
-        String menu = "PID";
 
         for (Table table : table_list){
-            String MethodMapping = TableUtil.lowerCase(table.getClassName());
+            //模板路径
+            String service_impl_template_path = template_path + File.separator + "service_impl_template.txt";
+            String service_template_path = template_path + File.separator + "service_template.txt";
+            String controller_template_path = template_path + File.separator + "controller_template.txt";
+            String jsp_template_path = template_path + File.separator + "jsp_template.txt";
+            String js_template_path = template_path + File.separator + "js_template.txt";
+
+
+            String ViewHeaderMapping = "admin";
+            String HeaderMapping = "@RequestMapping(\"admin\")";
+            String menu = table.getPID();
+            if(ObjectHelper.isEmpty(menu)){
+                menu = "PID";
+            }
+
+//          String MethodMapping = TableUtil.lowerCase(table.getClassName());
+            if(ObjectHelper.isEmpty(table.getCnName())) table.setCnName("表名");
+            String MethodMapping = "";
             String EntityCNName = table.getCnName();
             String EntityName = table.getClassName();
-            String EntityLName = TableUtil.lowerCase(table.getClassName());
-
+//            String EntityLName = TableUtil.lowerCase(table.getClassName());
+            String EntityLName = "";
+            String ax[] = tables.split("_");
+            for(int i=0;i<ax.length;i++){
+                if(ax[i].length()>1) {
+                    MethodMapping += ax[i] + "/";
+                    if(ObjectHelper.isEmpty(EntityLName)){
+                        EntityLName += ax[i];
+                    }else{
+                        EntityLName += TableUtil.upperCase(ax[i]);
+                    }
+                }
+            }
+            if(ObjectHelper.isNotEmpty(MethodMapping)) MethodMapping = MethodMapping.substring(0,MethodMapping.length()-1);
             String EntityImport = "import " + package_path + ".pojo." + EntityName + ";\n" +
                     "import " + package_path + ".pojo." + EntityName + "Example;\n" ;
             String DaoImport =  "import " + package_path + ".mapper." + EntityName + "Mapper;\n";
@@ -133,16 +165,68 @@ public class IAdminService implements TemplateCoreService {
             String apply_form_li = "";
             String view_columns = "";
             String view_load_form_data = "";
+            String detail_li = "";
+            String detail_li_load_data = "";
+            String export_head = "";
             for(Columns columns : table.getColumns()){
                 String comment_arr[] = columns.getComment().split("\\|");
+
+                String filedtype = columns.getFieldType();//类别
+                String ckey = columns.getCkey();//键类型
+                String view_columns_width = findViewColumnsWidth(columns.getLength());
+                String view_columns_hide = "";
+                String view_columns_formatter = "";
+                if(ckey.equals("PRI")){//主键
+                    view_columns_hide = ",hidden:true";
+                }
+                if(filedtype.equals("Date")){
+                    view_columns_formatter = ",formatter:formatterTime";
+                    view_columns_width = "150";
+                }
+                if(filedtype.equals("Integer")){
+                    view_columns_width = "100";
+                }
+                if(filedtype.equals("Long")){
+                    view_columns_width = "100";
+                }
+                if(filedtype.equals("BigDecimal")){
+                    view_columns_width = "150";
+                }
+                view_columns += "\t\t{field:'"+columns.getFieldName()+"'"+view_columns_hide+",title:'"+comment_arr[0]+"',align:\"center\",width:"+view_columns_width+view_columns_formatter+"},\n";
+
+                String data_options = "";
+                String easyui_validatebox = "class=\"easyui-validatebox textbox vipt\"";
+                if(columns.getNullable().equals("NO")){
+                    data_options = "data-options=\"required:true\"";
+                }
+                if(filedtype.equals("Date")){
+                    easyui_validatebox = "class=\"easyui-datetimebox textbox vipt\"";
+                }
+                if(filedtype.equals("Integer")||filedtype.equals("Long")||filedtype.equals("BigDecimal")){
+                    easyui_validatebox = "class=\"easyui-numberbox vipt\" min=\"0\" max=\"100\" ";
+                }
+                if(filedtype.equals("BigDecimal")){
+                    easyui_validatebox += "precision=\""+columns.getScale()+"\"";
+                }
                 apply_form_li += "\t\t\t\t<li class=\"fm_2l\">\n" +
                         "\t\t\t\t\t<label>"+comment_arr[0]+"：</label>\n" +
-                        "\t\t\t\t\t<input name=\""+columns.getFieldName()+"\" class=\"easyui-validatebox textbox vipt\" data-options=\"required:true\">\n" +
+                        "\t\t\t\t\t<input name=\""+columns.getFieldName()+"\" "+easyui_validatebox+" "+data_options+">\n" +
                         "\t\t\t\t</li>\n";
 
-                view_columns += "\t\t      {field:'"+columns.getFieldName()+"',title:'"+comment_arr[0]+"',align:\"center\",width:200},\n";
-
                 view_load_form_data += "\t\t" + columns.getFieldName() +":row." + columns.getFieldName() + ",\n";
+
+                detail_li += "\t\t\t\t\t<li>\n" +
+                        "\t\t\t\t\t\t<label>"+comment_arr[0]+"：</label>\n" +
+                        "\t\t\t\t\t\t<input id=\""+columns.getFieldName()+"_d_input\" class=\"easyui-validatebox textbox vipt\" disabled=\"disabled\">\n" +
+                        "\t\t\t\t\t</li>\n";
+
+                if(filedtype.equals("Date")) {
+                    detail_li_load_data += "\t$('#" + columns.getFieldName() + "_d_input').val(formatterTime(row." + columns.getFieldName() + "));\n";
+                }else{
+                    detail_li_load_data += "\t$('#" + columns.getFieldName() + "_d_input').val(row." + columns.getFieldName() + ");\n";
+                }
+
+                export_head += "\t\theadMap.put(\""+columns.getFieldName()+"\", \""+comment_arr[0]+"\");\n";
             }
             if(ObjectHelper.isNotEmpty(view_columns))view_columns = view_columns.substring(0,view_columns.length()-2);
             if(ObjectHelper.isNotEmpty(view_load_form_data))view_load_form_data = view_load_form_data.substring(0,view_load_form_data.length()-2);
@@ -174,6 +258,15 @@ public class IAdminService implements TemplateCoreService {
 
                 //输出Service
                 {
+                    String EntityVerify = "";
+                    for(Columns columns : table.getColumns()){
+                        if(columns.getNullable().equals("NO")&&!columns.getCkey().equals("PRI")){//不为空验证，不验证主键
+                            String GET = EntityLName + ".get" + TableUtil.upperCase(columns.getFieldName()) +"()";
+                            String comment_arr[] = columns.getComment().split("\\|");
+                            String MSG = comment_arr[0] + "不可为空！";
+                            EntityVerify += "\t\tif(ObjectHelper.isEmpty("+GET+")) return new HttpResponse(HttpResponse.HTTP_ERROR,\""+MSG+"\");\n";
+                        }
+                    }
                     //导入文件
                     String service_template  = readFile2String(service_template_path);
                     //创建路径及文件
@@ -192,6 +285,7 @@ public class IAdminService implements TemplateCoreService {
                     service_template = service_template.replace("#{IDParams}", IDParams);
                     service_template = service_template.replace("#{GetIDs}", GetIDs);
                     service_template = service_template.replace("#{IDs}", IDs);
+                    service_template = service_template.replace("#{EntityVerify}", EntityVerify);
                     FileWriter entityWriter =new FileWriter(file);
                     entityWriter.write(service_template);
                     entityWriter.close();
@@ -218,6 +312,7 @@ public class IAdminService implements TemplateCoreService {
                     controller_template = controller_template.replace("#{IDParams}", IDParams);
                     controller_template = controller_template.replace("#{GetIDs}", GetIDs);
                     controller_template = controller_template.replace("#{IDs}", IDs);
+                    controller_template = controller_template.replace("#{export_head}", export_head);
 
                     controller_template = controller_template.replace("#{HeaderMapping}", HeaderMapping);
                     controller_template = controller_template.replace("#{MethodMapping}", MethodMapping);
@@ -232,7 +327,7 @@ public class IAdminService implements TemplateCoreService {
                     //导入文件
                     String jsp_template  = readFile2String(jsp_template_path);
                     //创建路径及文件
-                    File file = new File(view_path + File.separator + EntityLName + "Index.jsp");
+                    File file = new File(view_out + File.separator + EntityLName + "Index.jsp");
                     if (!file.exists()) file.createNewFile();
 
                     jsp_template = jsp_template.replace("#{EntityCNName}", EntityCNName);
@@ -244,9 +339,9 @@ public class IAdminService implements TemplateCoreService {
 
                     jsp_template = jsp_template.replace("#{view_title}", view_title);
                     jsp_template = jsp_template.replace("#{view_remark}", view_remark);
-                    jsp_template = jsp_template.replace("#{view}", view + "/" + EntityLName + "Index.js");
+                    jsp_template = jsp_template.replace("#{view}", js_path + "/" + EntityLName + "Index.js");
                     jsp_template = jsp_template.replace("#{apply_form_li}", apply_form_li);
-
+                    jsp_template = jsp_template.replace("#{detail_li}", detail_li);
                     FileWriter entityWriter =new FileWriter(file);
                     entityWriter.write(jsp_template);
                     entityWriter.close();
@@ -255,13 +350,14 @@ public class IAdminService implements TemplateCoreService {
                 {
                     String js_template  = readFile2String(js_template_path);
                     //创建路径及文件
-                    File file = new File(view_path + File.separator + EntityLName + "Index.js");
+                    File file = new File(view_out + File.separator + EntityLName + "Index.js");
                     if (!file.exists()) file.createNewFile();
 
                     js_template = js_template.replace("#{EntityName}", EntityName);
                     js_template = js_template.replace("#{EntityLName}", EntityLName);
                     js_template = js_template.replace("#{view_columns}", view_columns);
                     js_template = js_template.replace("#{view_load_form_data}", view_load_form_data);
+                    js_template = js_template.replace("#{detail_li_load_data}", detail_li_load_data);
                     FileWriter entityWriter =new FileWriter(file);
                     entityWriter.write(js_template);
                     entityWriter.close();
@@ -273,6 +369,7 @@ public class IAdminService implements TemplateCoreService {
 
         return true;
     }
+
 
     private String readFile2String(String filePath){
         StringBuilder sb = new StringBuilder();//定义一个字符串缓存，将字符串存放缓存中
@@ -290,4 +387,20 @@ public class IAdminService implements TemplateCoreService {
         }
         return sb.toString();
     }
+
+    private String findViewColumnsWidth(String length) {
+        try {
+            Integer l = Integer.valueOf(length);
+            if(l>0&&l<=32){
+                return "150";
+            }else if(l>32&&l<=64){
+                return "250";
+            }else{
+                return "350";
+            }
+        }catch (Exception e){
+            return "200";
+        }
+    }
+
 }

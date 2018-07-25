@@ -121,7 +121,38 @@ function deleteEntity(){
 	});
 }
 
+function openDWindow(){
+	var row = $("#datagrid").datagrid("getSelected");
+	if(isEmpty(row)){
+		$.messager.alert("提示框","请选择一条记录！");
+		return;
+	}
+#{detail_li_load_data}
+	$('#detail_window').window('open');
+	$('#detail_window').window('center');
+}
+
+function closeDWindow(){
+	$("#detail_window").window('close');
+}
+
 function doSearch(){
+    var btime = $("#sk_btime").datebox("getValue");
+	var etime = $("#sk_etime").datebox("getValue");
 	var searchkey = $("#sk_searchkey").val();
-	$("#datagrid").datagrid("reload",{searchkey:searchkey});
+	$("#datagrid").datagrid("reload",{searchkey:searchkey,btime:btime,etime:etime});
+}
+
+function doClear(){
+    $("#sk_btime").datebox("clear");
+	$("#sk_etime").datebox("clear");
+	$("#sk_searchkey").textbox("clear");
+	$("#datagrid").datagrid("reload",{searchkey:null,btime:null,etime:null});
+}
+
+function doExport(){
+	var btime = $("#sk_btime").datebox("getValue");
+	var etime = $("#sk_etime").datebox("getValue");
+	var searchkey = $("#sk_searchkey").val();
+	window.open(basePath + export#{EntityName} + "?searchkey="+searchkey+"&btime="+btime+"&etime="+etime);
 }

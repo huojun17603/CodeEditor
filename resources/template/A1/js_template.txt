@@ -122,6 +122,15 @@ function deleteEntity(){
 }
 
 function doSearch(){
+    var btime = $("#sk_btime").datebox("getValue");
+	var etime = $("#sk_etime").datebox("getValue");
 	var searchkey = $("#sk_searchkey").val();
-	$("#datagrid").datagrid("reload",{searchkey:searchkey});
+	$("#datagrid").datagrid("reload",{searchkey:searchkey,btime:btime,etime:etime});
+}
+
+function doClear(){
+    $("#sk_btime").datebox("clear");
+	$("#sk_etime").datebox("clear");
+	$("#sk_searchkey").textbox("clear");
+	$("#datagrid").datagrid("reload",{searchkey:null,btime:null,etime:null});
 }

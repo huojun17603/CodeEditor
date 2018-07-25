@@ -69,8 +69,18 @@ public class #{EntityName}Controller extends AdminController{
         String btime = ObjectHelper.isEmpty(query.getBtime())?"上线":query.getBtime();
         String etime = ObjectHelper.isEmpty(query.getEtime())?"至今":query.getEtime();
         String title = "#{EntityCNName}（"+btime+"~"+etime+"）";
-        //TODO 表头
-        //headMap.put("userphone", "会员手机");
+        //TODO 表头 + 状态转换模板
+        for(Map<String,Object> map : list) {
+			Integer status = (Integer) map.get("status");
+			if (ObjectHelper.isNotEmpty(status)) {
+				if (status == 1){
+					map.put("status", "正常");
+				}else{
+					map.put("status", "注销");
+				}
+			}
+		}
+#{export_head}
         ExcelUtil.downloadExcelFile(title,headMap,list,response);
     }
 	

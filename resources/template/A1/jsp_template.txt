@@ -32,9 +32,13 @@
 			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="editStatus()">修改状态</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" style="width:120px"  onclick="deleteEntity()">删除</a>
 			<div class="sgtz_atn">
-				<span style="font-weight: bold;">搜索筛选：</span>
-				<input id="sk_searchkey" class="easyui-searchbox" data-options="prompt:'搜索关键字（TODO）',searcher:doSearch" style="width:300px"></input>
-			</div> 
+                <span style="font-weight: bold;">搜索筛选：</span>
+                <input id="sk_btime" class="easyui-datebox" data-options="prompt:'开始时间'">
+                <input id="sk_etime" class="easyui-datebox" data-options="prompt:'结束时间'">
+                <input id="sk_searchkey" class="easyui-textbox vipt" data-options="prompt:'搜索关键字（TODO）'" style="width:300px"></input>
+                <a href="javascript:void(0)" class="easyui-linkbutton"  style="width:80px"  onclick="doSearch()" >搜索</a>
+                <a href="javascript:void(0)" class="easyui-linkbutton"  style="width:80px"  onclick="doClear()" >清空</a>
+            </div>
 		</div>
 	</div>
 

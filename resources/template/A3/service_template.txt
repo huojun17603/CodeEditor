@@ -51,6 +51,7 @@ public class #{EntityName}ServiceImpl implements #{EntityName}Service {
             return new HttpResponse(HttpResponse.HTTP_ERROR,"无效的数据信息");
         }
         //TODO
+        //entity.setStatus(status);
         #{EntityLName}Mapper.updateByPrimaryKeySelective(entity);
         return new HttpResponse(HttpResponse.HTTP_OK,HttpResponse.HTTP_MSG_OK);
 	}
@@ -100,11 +101,15 @@ public class #{EntityName}ServiceImpl implements #{EntityName}Service {
 			if(ObjectHelper.isNotEmpty(sort.getSort())&&ObjectHelper.isNotEmpty(sort.getOrder())){
 				paramMap.put("orderByClause",sort.getSort()+" "+sort.getOrder());
 			}
-		}
+		}else{
+         	paramMap.put("orderByClause"," createtime desc");
+        }
 		//TODO 添加条件
 		//if(ObjectHelper.isNotEmpty(query.getSearchkey()))paramMap.put("searchkey", query.getSearchkey());
-	    //if(ObjectHelper.isNotEmpty(query.getBtime()))paramMap.put("btime", query.getBtime());
+		//if(ObjectHelper.isNotEmpty(query.getBtime()))paramMap.put("btime", query.getBtime());
         //if(ObjectHelper.isNotEmpty(query.getEtime()))paramMap.put("etime", query.getEtime());
+        //if(ObjectHelper.isNotEmpty(query.getStatus()))paramMap.put("status", query.getStatus());
+		//TODO
 		List<Map<String,Object>> list = #{EntityLName}Mapper.selectAdminList(paramMap);
 		PageInfo<Map<String,Object>> pageInfo = new PageInfo<>(list);
 		page.setRowCount(pageInfo.getTotal());

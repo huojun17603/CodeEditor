@@ -27,7 +27,7 @@ function openDWindow(){
 		$.messager.alert("提示框","请选择一条记录！");
 		return;
 	}
-    $('#id_d_input').val(row.id);
+#{detail_li_load_data}
 	$('#detail_window').window('open');
 	$('#detail_window').window('center');
 }
@@ -47,7 +47,7 @@ function doSearch(){
 function doClear(){
     $("#sk_btime").datebox("clear");
 	$("#sk_etime").datebox("clear");
-	$("#sk_searchkey").val("");
+	$("#sk_searchkey").textbox("clear");
 	$("#datagrid").datagrid("reload",{searchkey:null,btime:null,etime:null});
 }
 
