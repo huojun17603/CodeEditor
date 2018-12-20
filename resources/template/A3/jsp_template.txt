@@ -46,7 +46,7 @@
                     <label>审核处理：</label>
                     <select id="handleresult_input" name="handleresult" class="easyui-combobox" style="width: 120px;">
                         <option value="2">通过</option>
-                        <option value="3">不通过</option>
+                        <option value="3">不与通过</option>
                     </select>
                 </li>
                 <li id="msg_li" class="fm_1l">

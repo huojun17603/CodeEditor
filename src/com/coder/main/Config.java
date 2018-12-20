@@ -1,11 +1,10 @@
 package com.coder.main;
 
 import com.coder.core.entity.Template;
+import com.ich.core.base.JsonUtils;
+import com.ich.core.base.TimeUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Config {
 
@@ -22,5 +21,19 @@ public class Config {
         templates.add(new Template("ICH通用代码生成模板","IAdminService","Mybatis,MySQL"));
     }
 
-
+    public static void main(String[] args){
+        Date date = new Date();
+        List<Map<String,Object>> list = new ArrayList<>();
+        for(int i=0;i<365;i++){
+            Map<String,Object> data = new HashMap<>();
+            String day = TimeUtil.format(new Date(date.getTime()-(i*TimeUtil.ONE_DAY)),"yyyy-MM-dd");
+            data.put("month",day);
+            data.put("A",i);
+            data.put("B",i*2);
+            data.put("C",i*3);
+            list.add(data);
+        }
+        String json = JsonUtils.objectToJson(list);
+        System.out.println(json);
+    }
 }

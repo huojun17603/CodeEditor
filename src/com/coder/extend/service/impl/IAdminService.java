@@ -192,7 +192,7 @@ public class IAdminService implements TemplateCoreService {
                 if(filedtype.equals("BigDecimal")){
                     view_columns_width = "150";
                 }
-                view_columns += "\t\t{field:'"+columns.getFieldName()+"'"+view_columns_hide+",title:'"+comment_arr[0]+"',align:\"center\",width:"+view_columns_width+view_columns_formatter+"},\n";
+                view_columns += "\t\t{field:'"+columns.getFieldName()+"'"+view_columns_hide+",title:'"+comment_arr[0]+"',width:"+view_columns_width+view_columns_formatter+"},\n";
 
                 String data_options = "";
                 String easyui_validatebox = "class=\"easyui-validatebox textbox vipt\"";

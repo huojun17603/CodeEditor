@@ -1,0 +1,12 @@
+List<Map<String, Object>> selectAdminList(Map<String, Object> paramMap);
+
+<!-- ///////////////////////////////////////////// -->
+  <select id="selectAdminList" parameterType="map" resultType="map">
+    select m.*,
+    from p_memberlv m
+    where 1=1
+    <if test="searchkey!=null and searchkey!=''"> and m.name like '%${searchkey}%'</if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
